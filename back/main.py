@@ -1,28 +1,35 @@
 from fastapi import FastAPI
-
-app = FastAPI()
-
-from sqlmodel import Field, Session, SQLModel, select, create_engine
+from sqlmodel import Field, Session, select, create_engine
 from models import Map, Player, Time
 
+
+app = FastAPI()
 engine = create_engine("postgresql://postgres:password@localhost:5000/timer")
+
+
+def query(model, where=None):
+    with Session(engine) as session:
+        if where is None:
+            results = session.exec(statement=select(model))
+        else:
+            results = session.exec(statement=select(model).where(where))
+        datas = results.all()
+        return [model(id=data.id, name=data.name, image_url=data.image_url, start_zone=data.start_zone, end_zone=data.end_zone) for data in datas]
+
 
 @app.get("/maps")
 def get_maps():
-    with Session(engine) as session:
-        results = session.exec(statement=select(Map))
-        maps = results.all()
-        return [Map(id=map.id, name=map.name, image_url=map.image_url, start_zone=map.start_zone, end_zone=map.end_zone) for map in maps]
+    return query(Map, None)
 
 
 @app.get("/maps/{_id}")
 def get_map_by_id(_id: int):
-    return {"data": "get map by id"}
+    return query(Map, Map.id == _id)
 
 
 @app.get("/maps/{_id}/times")
 def get_times_by_map_id(_id: int):
-    return {"data": "get times by map id"}
+    return query(Time, Time.map_id == _id)
 
 
 @app.post("/maps")
@@ -42,17 +49,17 @@ def delete_map_by_id(_id: int):
 
 @app.get("/players")
 def get_players():
-    return {"data": "get players"}
+    return query(Player, None)
 
 
 @app.get("/players/{_id}")
 def get_player_by_id(_id: int):
-    return {"data": "get player by id"}
+    return query(Player, Player.id == _id)
 
 
 @app.get("/players/{_id}/times")
 def get_times_by_player_id(_id: int):
-    return {"data": "get times by player id"}
+    return query(Time, Time.player_id == _id)
 
 
 @app.post("/players")
@@ -72,7 +79,7 @@ def delete_player_by_id():
 
 @app.get("/times/{_id}")
 def get_time_by_id(_id: int):
-    return {"data": "get time by id"}
+    return query(Time, Time.id == _id)
 
 
 @app.post("/times")
