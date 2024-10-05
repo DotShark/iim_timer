@@ -3,35 +3,30 @@ from typing import List
 from datetime import datetime
 
 class Map(SQLModel, table=True):
-    __tablename__ = 'maps'
-
     id: int = Field(default=None, primary_key=True)
     name: str
+    image_url: str
     start_zone: str
     end_zone: str
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
     # Relationships
-    times: List['Time'] = Relationship(back_populates='map')
+    times: List["Time"] = Relationship(back_populates="map")
 
 
 class Player(SQLModel, table=True):
-    __tablename__ = 'players'
-
     id: int = Field(default=None, primary_key=True)
-    username: str
+    name: str
     unique_id: str
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
     # Relationships
-    times: List['Time'] = Relationship(back_populates='player')
+    times: List["Time"] = Relationship(back_populates="player")
 
 
 class Time(SQLModel, table=True):
-    __tablename__ = 'times'
-
     id: int = Field(default=None, primary_key=True)
     time: float
     max_speed: float
@@ -39,9 +34,9 @@ class Time(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
-    map_id: int = Field(foreign_key='maps.id')
-    player_id: int = Field(foreign_key='players.id')
+    map_id: int = Field(foreign_key="map.id")
+    player_id: int = Field(foreign_key="player.id")
 
     # Relationships
-    map: Map = Relationship(back_populates='times')
-    player: Player = Relationship(back_populates='times')
+    map: Map = Relationship(back_populates="times")
+    player: Player = Relationship(back_populates="times")

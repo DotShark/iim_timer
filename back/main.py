@@ -2,10 +2,17 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+from sqlmodel import Field, Session, SQLModel, select, create_engine
+from models import Map, Player, Time
+
+engine = create_engine("postgresql://postgres:password@localhost:5000/timer")
 
 @app.get("/maps")
 def get_maps():
-    return {"data": "get maps"}
+    with Session(engine) as session:
+        results = session.exec(statement=select(Map))
+        maps = results.all()
+        return [Map(id=map.id, name=map.name, image_url=map.image_url, start_zone=map.start_zone, end_zone=map.end_zone) for map in maps]
 
 
 @app.get("/maps/{_id}")
