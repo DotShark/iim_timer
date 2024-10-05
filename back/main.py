@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from sqlmodel import Session, create_engine, select, insert
+from sqlmodel import Session, select, create_engine
 from models import Map, Player, Time
 
 app = FastAPI()
