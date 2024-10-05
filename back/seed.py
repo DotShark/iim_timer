@@ -1,7 +1,9 @@
 from sqlmodel import Session, create_engine
 from models import Map, Player, Time
 
+
 engine = create_engine("postgresql://postgres:password@localhost:5000/timer")
+
 
 with Session(engine) as session:
     session.add(Map(name="bhop_japan", image_url="https://pouf.dotshark.ovh/discord/bhop_japan.jpg", start_zone="", end_zone=""))

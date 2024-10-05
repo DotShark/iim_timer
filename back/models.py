@@ -2,6 +2,7 @@ from sqlmodel import Field, SQLModel, Relationship
 from typing import List
 from datetime import datetime
 
+
 class Map(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str

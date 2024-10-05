@@ -1,28 +1,61 @@
 from fastapi import FastAPI
-
-app = FastAPI()
-
-from sqlmodel import Field, Session, SQLModel, select, create_engine
+from sqlmodel import Session, create_engine, select, insert
 from models import Map, Player, Time
 
+app = FastAPI()
 engine = create_engine("postgresql://postgres:password@localhost:5000/timer")
 
+
+# region maps
 @app.get("/maps")
 def get_maps():
     with Session(engine) as session:
         results = session.exec(statement=select(Map))
-        maps = results.all()
-        return [Map(id=map.id, name=map.name, image_url=map.image_url, start_zone=map.start_zone, end_zone=map.end_zone) for map in maps]
+        datas = results.all()
+        return [
+            Map(
+                id=data.id,
+                name=data.name,
+                image_url=data.image_url,
+                start_zone=data.start_zone,
+                end_zone=data.end_zone
+            ) for data in datas
+        ]
 
 
 @app.get("/maps/{_id}")
 def get_map_by_id(_id: int):
-    return {"data": "get map by id"}
+    with Session(engine) as session:
+        results = session.exec(statement=select(Map).where(Map.id == _id))
+        datas = results.all()
+        return [
+            Map(
+                id=data.id,
+                name=data.name,
+                image_url=data.image_url,
+                start_zone=data.start_zone,
+                end_zone=data.end_zone
+            ) for data in datas
+        ]
 
 
 @app.get("/maps/{_id}/times")
 def get_times_by_map_id(_id: int):
-    return {"data": "get times by map id"}
+    with Session(engine) as session:
+        results = session.exec(statement=select(Time).where(Map.id == _id))
+        datas = results.all()
+        return [
+            Time(
+                id=data.id,
+                time=data.time,
+                max_speed=data.max_speed,
+                average_speed=data.average_speed,
+                created_at=data.created_at,
+                updated_at=data.updated_at,
+                map_id=data.map_id,
+                player_id=data.player_id
+            ) for data in datas
+        ]
 
 
 @app.post("/maps")
@@ -40,19 +73,53 @@ def delete_map_by_id(_id: int):
     return {"data": "delete map by id"}
 
 
+# endregion
+# region players
 @app.get("/players")
 def get_players():
-    return {"data": "get players"}
+    with Session(engine) as session:
+        results = session.exec(statement=select(Player))
+        datas = results.all()
+        return [
+            Player(
+                id=data.id,
+                name=data.name,
+                unique_id=data.unique_id
+            ) for data in datas
+        ]
 
 
 @app.get("/players/{_id}")
 def get_player_by_id(_id: int):
-    return {"data": "get player by id"}
+    with Session(engine) as session:
+        results = session.exec(statement=select(Player).where(Player.id == _id))
+        datas = results.all()
+        return [
+            Player(
+                id=data.id,
+                name=data.name,
+                unique_id=data.unique_id
+            ) for data in datas
+        ]
 
 
 @app.get("/players/{_id}/times")
 def get_times_by_player_id(_id: int):
-    return {"data": "get times by player id"}
+    with Session(engine) as session:
+        results = session.exec(statement=select(Time).where(Player.id == _id))
+        datas = results.all()
+        return [
+            Time(
+                id=data.id,
+                time=data.time,
+                max_speed=data.max_speed,
+                average_speed=data.average_speed,
+                created_at=data.created_at,
+                updated_at=data.updated_at,
+                map_id=data.map_id,
+                player_id=data.player_id
+            ) for data in datas
+        ]
 
 
 @app.post("/players")
@@ -70,9 +137,25 @@ def delete_player_by_id():
     return {"data": "delete player by id"}
 
 
+# endregion
+# region times
 @app.get("/times/{_id}")
 def get_time_by_id(_id: int):
-    return {"data": "get time by id"}
+    with Session(engine) as session:
+        results = session.exec(statement=select(Time).where(Time.id == _id))
+        datas = results.all()
+        return [
+            Time(
+                id=data.id,
+                time=data.time,
+                max_speed=data.max_speed,
+                average_speed=data.average_speed,
+                created_at=data.created_at,
+                updated_at=data.updated_at,
+                map_id=data.map_id,
+                player_id=data.player_id
+            ) for data in datas
+        ]
 
 
 @app.post("/times")
@@ -88,3 +171,4 @@ def put_time_by_id(_id: int):
 @app.delete("/times/{_id}")
 def delete_time_by_id(_id: int):
     return {"data": "delete time by id"}
+# endregion
