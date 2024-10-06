@@ -15,4 +15,4 @@ COPY . /code
 EXPOSE 8000
 
 # Run migrations, run seeding and start the FastAPI application using uvicorn
-CMD ["sh", "-c", "alembic upgrade head && python seed.py && fastapi run main.py --port 8000"]
+CMD ["sh", "-c", "alembic upgrade head && python seed.py && fastapi run main.py --port 4000"]

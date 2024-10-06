@@ -11,6 +11,11 @@ services:
       - "5000:5432"
     networks:
       - timer_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
 
   adminer:
     container_name: timer_adminer
@@ -28,12 +33,15 @@ services:
       context: ./back
       dockerfile: Dockerfile 
     ports:
-      - "4000:8000"
+      - "4000:4000"
     environment:
       IS_DOCKER: true
       POSTGRES_URL: ${POSTGRES_URL}
     networks:
       - timer_network
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   timer_data:
