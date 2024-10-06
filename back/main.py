@@ -1,7 +1,8 @@
 from os import getenv
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from sqlmodel import Session, select, create_engine, desc
+from fastapi.middleware.cors import CORSMiddleware
+from sqlmodel import Session, select, create_engine
 from models import Map, Player, Time
 
 
@@ -13,6 +14,15 @@ if not postgres_url:
     raise Exception("Missing POSTGRES_URL env variable")
 engine = create_engine(postgres_url)
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 
 # region maps
