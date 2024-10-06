@@ -1,6 +1,8 @@
 from os import getenv
+from typing import Annotated
+
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session, select, create_engine
 from models import Map, Player, Time
@@ -75,8 +77,13 @@ def get_times_by_map_id(_id: int) -> list[Time]:
 
 
 @app.post("/maps", tags=["maps"])
-def post_map():
-    return {"data": "post map"}
+def post_map(name: Annotated[str, Form()],
+             image_url: Annotated[str, Form()],
+             start_zone: Annotated[str, Form()],
+             end_zone: Annotated[str, Form()]):
+    with Session(engine) as session:
+        session.add(Map(id=0, name=name, image_url=image_url, start_zone=start_zone, end_zone=end_zone))
+        session.commit()
 
 
 @app.put("/maps/{_id}", tags=["maps"])
@@ -138,8 +145,11 @@ def get_times_by_player_id(_id: int) -> list[Time]:
 
 
 @app.post("/players", tags=["players"])
-def post_player():
-    return {"data": "post player"}
+def post_player(name: Annotated[str, Form()],
+                unique_id: Annotated[str, Form()]):
+    with Session(engine) as session:
+        session.add(Player(id=0, name=name, unique_id=unique_id))
+        session.commit()
 
 
 @app.put("/players{_id}", tags=["players"])
@@ -166,8 +176,14 @@ def get_time_by_id(_id: int) -> Time:
 
 
 @app.post("/times", tags=["times"])
-def post_time():
-    return {"data": "post time"}
+def post_time(time: Annotated[str, Form()],
+              max_speed: Annotated[str, Form()],
+              average_speed: Annotated[str, Form()],
+              map_id: Annotated[str, Form()],
+              player_id: Annotated[str, Form()],):
+    with Session(engine) as session:
+        session.add(Time(time=time, max_speed=max_speed, average_speed=average_speed, map_id=map_id, player_id=player_id))
+        session.commit()
 
 
 @app.put("/times/{_id}", tags=["times"])
