@@ -36,10 +36,10 @@ def get_maps() -> list[Map]:
 def get_map_by_id(_id: int) -> Map:
     with Session(engine) as session:
         results = session.exec(statement=select(Map).where(Map.id == _id))
-        map = results.first()
-        if not map:
+        datas = results.first()
+        if not datas:
             raise HTTPException(status_code=404, detail="Map not found")
-        return map 
+        return datas
 
 
 @app.get("/maps/{_id}/times", tags=["maps"])
