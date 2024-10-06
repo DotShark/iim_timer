@@ -1,9 +1,18 @@
+from os import getenv
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from sqlmodel import Session, select, create_engine, desc
 from models import Map, Player, Time
 
+
+if not getenv("IS_DOCKER"):
+    load_dotenv("../.env")
+
+postgres_url = getenv("POSTGRES_URL")
+if not postgres_url:
+    raise Exception("Missing POSTGRES_URL env variable")
+engine = create_engine(postgres_url)
 app = FastAPI()
-engine = create_engine("postgresql://postgres:password@localhost:5000/timer")
 
 
 # region maps

@@ -1,5 +1,7 @@
 from logging.config import fileConfig
+from os import getenv
 
+from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
@@ -27,6 +29,14 @@ target_metadata = SQLModel.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+if not getenv("IS_DOCKER"):
+    load_dotenv("../.env")
+
+postgres_url = getenv("POSTGRES_URL")
+if not postgres_url:
+    raise Exception("Missing POSTGRES_URL env variable")
+
+config.set_main_option("sqlalchemy.url", postgres_url)
 
 
 def run_migrations_offline() -> None:

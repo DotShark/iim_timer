@@ -1,12 +1,25 @@
-from sqlmodel import Session, create_engine, text, select
-from models import Map, Player, Time
-import time as time_module
+from os import getenv
+from time import perf_counter
+from dotenv import load_dotenv
+from sqlmodel import Session, create_engine, select
+from models import Map, Player, Seeding, Time
 
-engine = create_engine("postgresql://postgres:password@localhost:5000/timer")
+if not getenv("IS_DOCKER"):
+    load_dotenv("../.env")
+
+postgres_url = getenv("POSTGRES_URL")
+if not postgres_url:
+    raise Exception("Missing POSTGRES_URL env variable")
+engine = create_engine(postgres_url)
 
 with Session(engine) as session:
+    seeding = session.exec(statement=select(Seeding)).first()
+    if seeding and seeding.done:
+        print("The required data is already in the database")
+        exit()
+
     print("Going to (re)create all required data")
-    start_time = time_module.perf_counter()
+    start_time = perf_counter()
 
     times = session.exec(statement=select(Time)).all()
     for time in times:
@@ -96,6 +109,9 @@ with Session(engine) as session:
     session.commit()
     print("- Created times")
 
+    session.add(Seeding(done=True))
+    session.commit()
+
     # Calculate and print elapsed time
-    elapsed_time = time_module.perf_counter() - start_time
+    elapsed_time = perf_counter() - start_time
     print(f"Complete! Took {round(elapsed_time * 1000)}ms")

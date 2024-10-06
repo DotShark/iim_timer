@@ -22,6 +22,19 @@ services:
     networks:
       - timer_network
 
+  back:
+    container_name: timer_back
+    build:
+      context: ./back
+      dockerfile: Dockerfile 
+    ports:
+      - "4000:8000"
+    environment:
+      IS_DOCKER: true
+      POSTGRES_URL: ${POSTGRES_URL}
+    networks:
+      - timer_network
+
 volumes:
   timer_data:
 

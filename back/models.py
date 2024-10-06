@@ -41,3 +41,7 @@ class Time(SQLModel, table=True):
     # Relationships
     map: Map = Relationship(back_populates="times")
     player: Player = Relationship(back_populates="times")
+
+
+class Seeding(SQLModel, table=True):
+    done: bool = Field(primary_key=True)
