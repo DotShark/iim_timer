@@ -43,6 +43,19 @@ services:
       db:
         condition: service_healthy
 
+  front:
+    container_name: timer_front
+    build:
+      context: ./front
+      dockerfile: Dockerfile 
+    ports:
+      - "3000:80"
+    networks:
+      - timer_network
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   timer_data:
 
