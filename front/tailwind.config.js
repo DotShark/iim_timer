@@ -1,18 +1,17 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        title: ["Poppins"],
+        sans: ["Inter"]
+      }
+    },
   },
   plugins: [],
-  
-  darkMode: 'class darkMode',
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-};
+}
 
