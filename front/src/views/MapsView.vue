@@ -48,13 +48,13 @@ onMounted(async () => {
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
  
-        <div v-for="map in maps" class="max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div v-for="map in maps" class="max-w-md bg-gray-800 border border-gray-700 rounded-lg shadow">
           <a href="#">
             <img class="rounded-t-lg" :src="`https://pouf.dotshark.ovh/discord/${map.name}.jpg`" alt="" />
           </a>
           <div class="p-5">
             <a href="#">
-              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ map.name }}</h5>
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-white">{{ map.name }}</h5>
             </a>
             <a href="#" class="inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-emerald-700 rounded-lg hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-emerald-800">
               Voir les temps
