@@ -29,7 +29,8 @@ app.add_middleware(
 @app.get("/maps", tags=["maps"])
 def get_maps() -> list[Map]:
     with Session(engine) as session:
-        results = session.exec(statement=select(Map))
+        statement = select(Map)
+        results = session.exec(statement)
         datas = results.all()
         return [
             Map(
@@ -45,7 +46,8 @@ def get_maps() -> list[Map]:
 @app.get("/maps/{_id}", tags=["maps"])
 def get_map_by_id(_id: int) -> Map:
     with Session(engine) as session:
-        results = session.exec(statement=select(Map).where(Map.id == _id))
+        statement = select(Map).where(Map.id == _id)
+        results = session.exec(statement)
         datas = results.first()
         if not datas:
             raise HTTPException(status_code=404, detail="Map not found")
@@ -92,7 +94,8 @@ def delete_map_by_id(_id: int):
 @app.get("/players", tags=["players"])
 def get_players() -> list[Player]:
     with Session(engine) as session:
-        results = session.exec(statement=select(Player))
+        statement = select(Player)
+        results = session.exec(statement)
         datas = results.all()
         return [
             Player(
@@ -106,7 +109,8 @@ def get_players() -> list[Player]:
 @app.get("/players/{_id}", tags=["players"])
 def get_player_by_id(_id: int) -> Player:
     with Session(engine) as session:
-        results = session.exec(statement=select(Player).where(Player.id == _id))
+        statement = select(Player).where(Player.id == _id)
+        results = session.exec(statement)
         player = results.first()
         if not player:
             raise HTTPException(status_code=404, detail="Map not found")
@@ -153,7 +157,8 @@ def delete_player_by_id():
 @app.get("/times/{_id}", tags=["times"])
 def get_time_by_id(_id: int) -> Time:
     with Session(engine) as session:
-        results = session.exec(statement=select(Time).where(Time.id == _id))
+        statement = select(Time).where(Time.id == _id)
+        results = session.exec(statement)
         time = results.first()
         if not time:
             raise HTTPException(404, detail="Time not found")
